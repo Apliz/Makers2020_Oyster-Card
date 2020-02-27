@@ -1,8 +1,6 @@
 class Journey
 
-		
-	attr_reader :latestjourney, :fare, :penalty
-		
+	attr_reader :latestjourney, :fare, :penalty, :travel_history	
 
 	PENALTY = 6
 	MIN_FARE = 1
@@ -11,7 +9,6 @@ class Journey
 		@travel_history = []
 		@latestjourney = {}
 		@penalty = PENALTY
-		@fare = []
 		@min_fare = MIN_FARE
 	end
 
@@ -23,12 +20,11 @@ class Journey
 		@travel_history << @latestjourney.transform_values! { station }.first
 	end
  
-
 	def in_journey?
 		@latestjourney.keys != [] ? true : false
 	end
 
-	def min_fare
-		@min_fare
+	def fare
+		@latestjourney.has_key?(nil) || @latestjourney.value?(nil) ? @penalty : @min_fare
 	end
 end
