@@ -1,15 +1,16 @@
 class Oystercard
 
-	attr_reader :balance, :max_balance, :journeys, :lastjourney, :Journey
+	attr_reader :balance, :max_balance, :journeys, :lastjourney 
 	
 	MAXBALANCE = 90	
 	MINBALANCE = 1
 
-	def initialize
+	def initialize(journey_class = Journey.new, journey_log_class = JourneyLog.new)
 		@balance = 0
 		@max_balance = MAXBALANCE
 		@minimum = MINBALANCE
-		@journey = Journey.new
+		@journey = journey_class
+		@log = journey_log_class
 	end
 
 	def top_up(amount)
@@ -17,19 +18,18 @@ class Oystercard
 		@balance += amount
 	end
 
-	def journey?
-		@journey.in_journey?()
-	end
-
 	def touchin(station = 'Railyard')
 		raise "Can't touch in with less than £1, please top up!" if @balance < @minimum
-		@journey.start_journey(station)
+		@log.start(station)
 	end
 
 	def touchout(station)
-		#deduct(@journey.fare)
-		@journey.end_journey(station)	
-		deduct(@journey.fare)
+		@log.finish(station)
+		deduct(@journey.fare(@log.latestjourney))
+	end
+
+	def journeys
+		@log.journeys
 	end
 
 	private
